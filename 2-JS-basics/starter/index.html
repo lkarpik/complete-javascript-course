@@ -1,11 +1,96 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <title>Section 2: JavaScript Language Basics</title>
-    </head>
 
-    <body>
-        <h1>Section 2: JavaScript Language Basics</h1>
-    </body>
+<head>
+    <meta charset="UTF-8">
+    <title>Section 2: JavaScript Language Basics</title>
+</head>
+
+<body>
+    <h1>Section 2: JavaScript Language Basics</h1>
+</body>
+<script>
+    let mark = {};
+    mark.mass = 104;
+    mark.height = 1.85;
+    let john = {};
+    john.mass = 85;
+    john.height = 1.85;
+
+
+    function BMI(person) {
+        return person.mass / person.height ** 2;
+    }
+
+    console.log(BMI(mark), BMI(john));
+
+    let age = 10;
+
+    if (age < 13) {
+        console.log(`This is a child`);
+    } else if (age <= 18) {
+        console.log(`This is teenager`);
+    } else {
+        console.log(`I's a man`);
+    }
+
+    switch (age) {
+        case 20:
+            console.log(age);
+            break;
+        case 10:
+            console.log(age);
+            break;
+
+        default:
+            console.log(`Not this`);
+            break;
+    }
+
+    switch (true) {
+        case age < 13:
+            console.log(`Child`);
+            break;
+        case age < 13:
+            console.log(`Hello`);
+            break;
+        case age > 13:
+            console.log(`Teen`);
+            break;
+        default:
+            break;
+    }
+    let team1_scores, team2_scores, team3_scores;
+    team1_scores = [1289, 120, 103];
+    team2_scores = [116, 94, 123];
+    team3_scores = [116, 94, 123];
+
+    const av = (scores) => {
+        let score = scores.reduce((acc, value) => {
+            return acc + value;
+        });
+        return score / scores.length;
+    }
+
+    if (av(team1_scores) > av(team2_scores) && av(team1_scores) > av(team3_scores)) {
+        console.log(`Team 1 wins with ${av(team1_scores)}`);
+    } else if (av(team2_scores) > av(team1_scores) && av(team2_scores) > av(team3_scores)) {
+        console.log(`Team 2 wins with ${av(team2_scores)}`);
+    } else if (av(team3_scores) > av(team1_scores) && av(team3_scores) > av(team2_scores)) {
+        console.log(`Team 3 wins with ${av(team3_scores)}`);
+    } else {
+        console.log(`No winner!`);
+    }
+
+
+    function getAge(birth) {
+        return 2019 - birth;
+    }
+
+    let areYouOld = function (birth) {
+        return 2019 - birth;
+    }
+</script>
+<script src="main.js"></script>
+
 </html>
