@@ -8,10 +8,13 @@ const budgetController = (function () {
 const UIController = (function () {
 
     const domItems = {
+        // btns
         addBtn: document.querySelector(`.add__btn`),
+        // inputs
         addType: document.querySelector(`.add__type`),
         addDescription: document.querySelector(`.add__description`),
         addValue: document.querySelector(`.add__value`),
+        // content
     }
 
     const getInput = function () {
