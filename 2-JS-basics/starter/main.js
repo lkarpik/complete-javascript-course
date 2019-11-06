@@ -152,9 +152,9 @@ const averageTip = (tips) => {
     return sum / tips.length;
 };
 
-let marksFamilyAverage = averageTip(marksFamily.calcTip());
-let johnsFamilyAverage = averageTip(johnsFamily.calcTip());
+marksFamily.averageTip = averageTip(marksFamily.calcTip());
+johnsFamily.averageTip = averageTip(johnsFamily.calcTip());
 
-let msg = marksFamilyAverage > johnsFamilyAverage ? `Marks family paid more on average: ${marksFamilyAverage}` : `Johns Family paid more on average: ${johnsFamilyAverage}`;
+let msg = marksFamily.averageTip > johnsFamily.averageTip ? `Marks family paid more on average: ${marksFamily.averageTip} vs ${johnsFamily.averageTip}` : `Johns Family paid more on average: ${johnsFamily.averageTip} vs ${marksFamily.averageTip}`;
 
 console.log(msg);
