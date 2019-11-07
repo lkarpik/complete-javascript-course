@@ -103,14 +103,20 @@ const UIController = (function () {
         // content
         incList: document.querySelector(`.income__list`),
         expList: document.querySelector(`.expenses__list`),
+        budgetValue: document.querySelector(`.budget__value`),
+        budgetIncome: document.querySelector(`.budget__income--value`),
+        budgetExpences: document.querySelector(`.budget__expenses--value`),
+        budgetPercentage: document.querySelector(`.budget__expenses--percentage`),
     };
 
     const getInput = function () {
+
         return {
             type: domItems.addType.value,
             description: domItems.addDescription.value,
             value: parseFloat(domItems.addValue.value)
         };
+
     };
 
     const addListItem = function (newItem, type) {
@@ -148,8 +154,19 @@ const UIController = (function () {
     }
 
     const clearFields = function () {
+
         document.querySelectorAll(`input`).forEach(el => el.value = ``);
         domItems.addDescription.focus();
+
+    }
+
+    const displayBudget = function (obj) {
+
+        domItems.budgetValue.textContent = obj.budget;
+        domItems.budgetIncome.textContent = obj.totalInc;
+        domItems.budgetExpences.textContent = obj.totalExp;
+        domItems.budgetPercentage.textContent = obj.percentage > 0 ? obj.percentage + `%` : `--`;
+
     }
 
 
@@ -157,7 +174,8 @@ const UIController = (function () {
         domItems: domItems,
         getInput: getInput,
         addListItem: addListItem,
-        clearFields: clearFields
+        clearFields: clearFields,
+        displayBudget: displayBudget
     };
 
 })();
@@ -167,45 +185,40 @@ const UIController = (function () {
 const controller = (function (budgetCtrl, UICtrl) {
 
     const domItems = UIController.domItems;
-
     const setEventListeners = function () {
 
         domItems.addBtn.addEventListener(`click`, ctrlAddItem);
-
         document.addEventListener(`keypress`, (e) => {
             if (e.keyCode === 13 || e.which === 13) {
                 ctrlAddItem();
             }
         });
+
     };
 
     const updateBudget = function () {
+
         // 5. Calculate and return the budget 
         budgetCtrl.calculateBudget()
-
         // 6. Display the budget
-        console.log(budgetCtrl.getBudget());
+        UICtrl.displayBudget(budgetCtrl.getBudget());
 
     }
 
     function ctrlAddItem() {
+
         // 1. Get the input
         const input = UICtrl.getInput();
-
         // Data validation
         if (input.description !== `` && !isNaN(input.value) && input.value > 0) {
-
             // 2. Add new item to budget ctrl
             const newItem = budgetCtrl.addItem(input.type, input.description, input.value);
-
             // 3. Add item to the UI 
             UICtrl.addListItem(newItem, input.type);
-
             // 4. Clear the fields
             UICtrl.clearFields();
 
             updateBudget();
-
         }
     }
 
@@ -213,6 +226,7 @@ const controller = (function (budgetCtrl, UICtrl) {
         init: function () {
             console.log(`App has been started!`);
             setEventListeners();
+            UICtrl.displayBudget(budgetCtrl.getBudget())
         }
     };
 
