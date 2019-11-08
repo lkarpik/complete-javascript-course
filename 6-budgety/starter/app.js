@@ -104,9 +104,17 @@ const budgetController = (function () {
 
     const calculatePercentage = function () {
 
+        data.allItems.exp.forEach(el => {
+            el.calcPercentage(data.totals.inc);
+        });
+    };
 
-
-    }
+    const getPercentages = function () {
+        const allPercentages = data.allItems.exp.map(el => {
+            return el.percentage;
+        });
+        return allPercentages;
+    };
 
     const getBudget = function () {
         return {
@@ -122,7 +130,9 @@ const budgetController = (function () {
         calculateBudget: calculateBudget,
         getBudget: getBudget,
         deleteItem: deleteItem,
-        calculatePercentage: calculatePercentage
+        calculatePercentage: calculatePercentage,
+        getPercentages: getPercentages,
+        data: data
     };
 
 
@@ -191,18 +201,18 @@ const UIController = (function () {
 
         list.insertAdjacentHTML(`beforeend`, html);
 
-    }
+    };
 
     const deleteListItem = function (type, id) {
         domItems.eventContainer.querySelector(`#${type}-${id}`).remove();
-    }
+    };
 
     const clearFields = function () {
 
         document.querySelectorAll(`input`).forEach(el => el.value = ``);
         domItems.addDescription.focus();
 
-    }
+    };
 
     const displayBudget = function (obj) {
 
@@ -211,7 +221,13 @@ const UIController = (function () {
         domItems.budgetExpences.textContent = obj.totalExp;
         domItems.budgetPercentage.textContent = obj.percentage > 0 ? obj.percentage + `%` : `--`;
 
-    }
+    };
+
+    const displayPercetages = function (allPercentages) {
+        document.querySelectorAll(`.item__percentage`).forEach((el, index) => {
+            el.textContent = allPercentages[index] > 0 ? allPercentages[index] + `%` : `--`;
+        });
+    };
 
 
     return {
@@ -220,7 +236,8 @@ const UIController = (function () {
         addListItem: addListItem,
         clearFields: clearFields,
         displayBudget: displayBudget,
-        deleteListItem: deleteListItem
+        deleteListItem: deleteListItem,
+        displayPercetages: displayPercetages
     };
 
 })();
@@ -253,12 +270,16 @@ const controller = (function (budgetCtrl, UICtrl) {
         // 6. Display the budget
         UICtrl.displayBudget(budgetCtrl.getBudget());
 
+        updatePercentage();
+
     }
 
     const updatePercentage = function () {
 
         // Calc percentage
+        budgetCtrl.calculatePercentage();
         // Read percentages from budget ctrl
+        UICtrl.displayPercetages(budgetCtrl.getPercentages());
         // Update UI
     }
 
