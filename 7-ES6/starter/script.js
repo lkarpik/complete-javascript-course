@@ -122,3 +122,6 @@ for (let curr of boxes) {
 // ****************
 console.log(friends.findIndex(el => el.length === 4));
 console.log(friends.find(el => el.length === 4));
+
+// *************************
+// Spread operator
