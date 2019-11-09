@@ -151,6 +151,7 @@ const UIController = (function () {
             addType: document.querySelector(`.add__type`),
             addDescription: document.querySelector(`.add__description`),
             addValue: document.querySelector(`.add__value`),
+            allInputs: document.querySelectorAll(`input, select`),
             // content
             incList: document.querySelector(`.income__list`),
             expList: document.querySelector(`.expenses__list`),
@@ -159,7 +160,8 @@ const UIController = (function () {
             budgetExpences: document.querySelector(`.budget__expenses--value`),
             budgetPercentage: document.querySelector(`.budget__expenses--percentage`),
             eventContainer: document.querySelector(`.container`),
-            expencePercents: document.querySelectorAll(`.item__percentage`)
+            expencePercents: document.querySelectorAll(`.item__percentage`),
+            month: document.querySelector(`.budget__title--month`)
         }
     };
 
@@ -223,7 +225,7 @@ const UIController = (function () {
     const displayBudget = function (obj) {
 
         getDomItems().budgetValue.textContent = formatNumber(obj.budget, obj.budget > 0 ? `inc` : `exp`);
-        getDomItems().budgetIncome.textContent = formatNumber(obj.totalInc);
+        getDomItems().budgetIncome.textContent = formatNumber(obj.totalInc, `inc`);
         getDomItems().budgetExpences.textContent = formatNumber(obj.totalExp, `exp`);
         getDomItems().budgetPercentage.textContent = obj.percentage > 0 ? obj.percentage + `%` : `--`;
 
@@ -267,6 +269,38 @@ const UIController = (function () {
         return `${sign} ${num}`;
     }
 
+    const displayMonth = function () {
+        let now = new Date;
+
+        let month = now.toLocaleDateString(`en`, {
+            month: `long`
+        });
+        getDomItems().month.textContent = month;
+    };
+
+    const changeType = function () {
+        // # Check checked type
+        // let typeSelected = this.options[this.selectedIndex].value;
+
+        // if (typeSelected === `exp`) {
+        //     getDomItems().allInputs.forEach(input => {
+        //         input.classList.add(`red-focus`);
+        //     });
+        //     getDomItems().addBtn.classList.add(`red`);
+        // } else {
+        //     getDomItems().allInputs.forEach(input => {
+        //         input.classList.remove(`red-focus`);
+        //     });
+        //     getDomItems().addBtn.classList.remove(`red`);
+        // }
+
+        // Only toggle - no checking input value
+        getDomItems().allInputs.forEach(input => {
+            input.classList.toggle(`red-focus`);
+        });
+        getDomItems().addBtn.classList.toggle(`red`);
+    };
+
     return {
 
         domItems: getDomItems,
@@ -276,7 +310,9 @@ const UIController = (function () {
         displayBudget: displayBudget,
         deleteListItem: deleteListItem,
         displayPercetages: displayPercetages,
-        formatNumber: formatNumber
+        formatNumber: formatNumber,
+        displayMonth: displayMonth,
+        changeType: changeType
 
     };
 
@@ -292,6 +328,7 @@ const controller = (function (budgetCtrl, UICtrl) {
     const setEventListeners = function () {
 
         domItems().addBtn.addEventListener(`click`, ctrlAddItem);
+
         document.addEventListener(`keypress`, (e) => {
             if (e.keyCode === 13 || e.which === 13) {
                 ctrlAddItem();
@@ -299,6 +336,8 @@ const controller = (function (budgetCtrl, UICtrl) {
         });
 
         domItems().eventContainer.addEventListener(`click`, ctrlDeleteItem)
+
+        domItems().addType.addEventListener(`change`, UICtrl.changeType)
 
     };
 
@@ -381,6 +420,7 @@ const controller = (function (budgetCtrl, UICtrl) {
             console.log(`App has been started!`);
             setEventListeners();
             UICtrl.displayBudget(budgetCtrl.getBudget());
+            UICtrl.displayMonth();
         }
     };
 
