@@ -142,29 +142,33 @@ const budgetController = (function () {
 // VIEW
 const UIController = (function () {
 
-    const domItems = {
-        // btns
-        addBtn: document.querySelector(`.add__btn`),
-        // inputs
-        addType: document.querySelector(`.add__type`),
-        addDescription: document.querySelector(`.add__description`),
-        addValue: document.querySelector(`.add__value`),
-        // content
-        incList: document.querySelector(`.income__list`),
-        expList: document.querySelector(`.expenses__list`),
-        budgetValue: document.querySelector(`.budget__value`),
-        budgetIncome: document.querySelector(`.budget__income--value`),
-        budgetExpences: document.querySelector(`.budget__expenses--value`),
-        budgetPercentage: document.querySelector(`.budget__expenses--percentage`),
-        eventContainer: document.querySelector(`.container`)
+    const getDomItems = function () {
+
+        return {
+            // btns
+            addBtn: document.querySelector(`.add__btn`),
+            // inputs
+            addType: document.querySelector(`.add__type`),
+            addDescription: document.querySelector(`.add__description`),
+            addValue: document.querySelector(`.add__value`),
+            // content
+            incList: document.querySelector(`.income__list`),
+            expList: document.querySelector(`.expenses__list`),
+            budgetValue: document.querySelector(`.budget__value`),
+            budgetIncome: document.querySelector(`.budget__income--value`),
+            budgetExpences: document.querySelector(`.budget__expenses--value`),
+            budgetPercentage: document.querySelector(`.budget__expenses--percentage`),
+            eventContainer: document.querySelector(`.container`),
+            expencePercents: document.querySelectorAll(`.item__percentage`)
+        }
     };
 
     const getInput = function () {
 
         return {
-            type: domItems.addType.value,
-            description: domItems.addDescription.value,
-            value: parseFloat(domItems.addValue.value)
+            type: getDomItems().addType.value,
+            description: getDomItems().addDescription.value,
+            value: parseFloat(getDomItems().addValue.value)
         };
 
     };
@@ -172,31 +176,32 @@ const UIController = (function () {
     const addListItem = function (newItem, type) {
         // Create HTML string
         let html, list;
+
         if (type === `inc`) {
             html =
                 `<div class="item clearfix" id="inc-${newItem.id}">
                     <div class="item__description">${newItem.description}</div>
                     <div class="right clearfix">
-                        <div class="item__value">${newItem.value}</div>
+                        <div class="item__value">${formatNumber(newItem.value)}</div>
                         <div class="item__delete">
                             <button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button>
                         </div>
                     </div>
                 </div>`;
-            list = domItems.incList;
+            list = getDomItems().incList;
         } else if (type === `exp`) {
             html =
                 `<div class="item clearfix" id="exp-${newItem.id}">
                     <div class="item__description">${newItem.description}</div>
                     <div class="right clearfix">
-                        <div class="item__value">${newItem.value}</div>
+                        <div class="item__value">${formatNumber(newItem.value)}</div>
                         <div class="item__percentage">21%</div>
                         <div class="item__delete">
                             <button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button>
                         </div>
                     </div>
                 </div>`;
-            list = domItems.expList;
+            list = getDomItems().expList;
         }
 
         list.insertAdjacentHTML(`beforeend`, html);
@@ -204,40 +209,75 @@ const UIController = (function () {
     };
 
     const deleteListItem = function (type, id) {
-        domItems.eventContainer.querySelector(`#${type}-${id}`).remove();
+        console.log(type, id);
+        getDomItems().eventContainer.querySelector(`#${type}-${id}`).remove();
     };
 
     const clearFields = function () {
 
         document.querySelectorAll(`input`).forEach(el => el.value = ``);
-        domItems.addDescription.focus();
+        getDomItems().addDescription.focus();
 
     };
 
     const displayBudget = function (obj) {
 
-        domItems.budgetValue.textContent = obj.budget;
-        domItems.budgetIncome.textContent = obj.totalInc;
-        domItems.budgetExpences.textContent = obj.totalExp;
-        domItems.budgetPercentage.textContent = obj.percentage > 0 ? obj.percentage + `%` : `--`;
+        getDomItems().budgetValue.textContent = formatNumber(obj.budget, obj.budget > 0 ? `inc` : `exp`);
+        getDomItems().budgetIncome.textContent = formatNumber(obj.totalInc);
+        getDomItems().budgetExpences.textContent = formatNumber(obj.totalExp, `exp`);
+        getDomItems().budgetPercentage.textContent = obj.percentage > 0 ? obj.percentage + `%` : `--`;
 
     };
 
     const displayPercetages = function (allPercentages) {
-        document.querySelectorAll(`.item__percentage`).forEach((el, index) => {
+
+        getDomItems().expencePercents.forEach((el, index) => {
             el.textContent = allPercentages[index] > 0 ? allPercentages[index] + `%` : `--`;
         });
+
+        // With callbacks
+
+        // let nodeFields = getDomItems().expencePercents;
+
+        // function foreachField(nodeFields, callback) {
+        //     for (let i = 0; i < nodeFields.length; i++) {
+        //         callback(nodeFields[i], i);
+        //     }
+        // };
+
+        // function callbackPercentage(curr, index) {
+        //     curr.textContent = allPercentages[index]
+        // };
+
+        // foreachField(nodeFields, callbackPercentage);
+
     };
 
+    const formatNumber = function (num, type) {
+        num = Math.abs(num);
+        // num = num.toFixed(2);
+        num = num.toLocaleString(`pl`, {
+            useGrouping: 'true',
+            minimumFractionDigits: "2",
+            maximumFractionDigits: "2",
+            // style: "currency",
+            // currency: "PLN"
+        });
+        let sign = type === `exp` ? `-` : `+`;
+        return `${sign} ${num}`;
+    }
 
     return {
-        domItems: domItems,
+
+        domItems: getDomItems,
         getInput: getInput,
         addListItem: addListItem,
         clearFields: clearFields,
         displayBudget: displayBudget,
         deleteListItem: deleteListItem,
-        displayPercetages: displayPercetages
+        displayPercetages: displayPercetages,
+        formatNumber: formatNumber
+
     };
 
 })();
@@ -251,14 +291,14 @@ const controller = (function (budgetCtrl, UICtrl) {
     // Event Listeners
     const setEventListeners = function () {
 
-        domItems.addBtn.addEventListener(`click`, ctrlAddItem);
+        domItems().addBtn.addEventListener(`click`, ctrlAddItem);
         document.addEventListener(`keypress`, (e) => {
             if (e.keyCode === 13 || e.which === 13) {
                 ctrlAddItem();
             }
         });
 
-        domItems.eventContainer.addEventListener(`click`, ctrlDeleteItem)
+        domItems().eventContainer.addEventListener(`click`, ctrlDeleteItem)
 
     };
 
@@ -269,8 +309,6 @@ const controller = (function (budgetCtrl, UICtrl) {
         budgetCtrl.calculateBudget()
         // 6. Display the budget
         UICtrl.displayBudget(budgetCtrl.getBudget());
-
-        updatePercentage();
 
     }
 
@@ -311,7 +349,9 @@ const controller = (function (budgetCtrl, UICtrl) {
             // Method #1
             // let itemID;
             // e.path.forEach(node => {
-            //     if (node.id && (node.id.split(`-`)[0] === `inc` || node.id.split(`-`)[0] === `exp` ) {
+            //     if (node.id && (node.id.split(` - `)[0] === `
+            // inc ` || node.id.split(` - `)[0] === `
+            // exp ` ) {
             //         itemID = node.id;
             //     }
             // });
@@ -330,19 +370,17 @@ const controller = (function (budgetCtrl, UICtrl) {
             UICtrl.deleteListItem(type, ID);
             // 3. Update budget
             updateBudget();
+            // 4. Update percentage
             updatePercentage();
 
         }
-
-
-
-    }
+    };
 
     return {
         init: function () {
             console.log(`App has been started!`);
             setEventListeners();
-            UICtrl.displayBudget(budgetCtrl.getBudget())
+            UICtrl.displayBudget(budgetCtrl.getBudget());
         }
     };
 
