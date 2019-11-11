@@ -1,15 +1,109 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Asynchronous JavaScript</title>
 </head>
+
 <body>
     <h1>Asynchronous JavaScript</h1>
     <script>
-        
+        /* 
+        const first = (name) => {
+
+            setTimeout(() => {
+
+                console.log(`Hello there ${name}`);
+
+            }, 1000)
+
+        };
+
+        const second = () => {
+            console.log(`Starting second`);
+            first(`form first function`);
+            console.log(`End second`);
+
+        };
+
+        second();
+        */
+
+        /* 
+        function getRecipe() {
+        setTimeout(() => {
+
+        const recipes = [
+            `Burger`,
+            `Ham`,
+            `Chicken`
+        ];
+        console.log(recipes);
+
+        setTimeout(id => {
+
+            const recipe = {
+                title: id,
+                recipe: `Go to mcDonald`,
+                author: `Lucky Luck`
+            }
+            console.log(recipe);
+
+            setTimeout(author => {
+
+                const recipe2 = {
+                    title: `Chicken`,
+                    recipe: `Be fast`,
+                    autor: author
+                }
+                console.log(recipe2);
+
+            }, 1000, recipe.author);
+
+        }, 1000, recipes[0]);
+
+        }, 1000);
+        };
+
+        getRecipe();
+        */
+
+        getIDs = new Promise((resolve, reject) => {
+            setTimeout(() => {
+                resolve([123, 234, 345, 456])
+            }, 1500)
+        });
+
+        getRecipe = (recipeID) => {
+            return new Promise((resolve, reject) => {
+                setTimeout(id => {
+                    const recipe = {
+                        title: id,
+                        recipe: `Go to mcDonald`,
+                        author: `Lucky Luck`
+                    };
+                    resolve(recipe)
+                }, 1500, recipeID)
+            });
+        };
+
+        async function getRecipesAW() {
+            const IDs = await getIDs;
+            console.log(IDs);
+            const recipe = await getRecipe(IDs[1]);
+            // console.log(recipe);
+            return recipe;
+        }
+
+        // getRecipesAW();
+
+        getRecipesAW().then(result => {
+            console.log(result.author);
+        });
     </script>
 </body>
+
 </html>
