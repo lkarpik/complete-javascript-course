@@ -90,16 +90,18 @@ const allStreets = [
     new Streets(`Street1`, 2012, 1000),
     new Streets(`Street2`, 2010, 150),
     new Streets(`Street3`, 2012),
-    new Streets(`Street3`, 2016, 200)
+    new Streets(`Street4`, 2016, 200)
 ];
 
 const allParks = [
     new Parks(`Park1`, 1878, 3000, 10000),
-    new Parks(`Park1`, 1955, 300, 100),
-    new Parks(`Park1`, 1867, 1300, 1000),
+    new Parks(`Park2`, 1955, 300, 100),
+    new Parks(`Park3`, 1867, 1300, 1001),
 ];
 
-function raport(p) {
+function raport(itemsArray) {
+
+    let nameOfItems = itemsArray[0].constructor.name.toUpperCase();
     /*     
     1. Tree density of each park in the town (forumla: number of trees/park area)
     2. Average age of each town's park (forumla: sum of all ages/number of parks)
@@ -108,15 +110,90 @@ function raport(p) {
     5. Size classification of all streets: tiny/small/normal/big/huge. If the size is unknown, the default is normal 
     */
     console.log(`===============`);
-    console.log(`Parks report`);
+    console.log(`${nameOfItems} REPORT`);
     console.log(`===============`);
 
 
+    // Common functions
+    const averageAge = () => {
+
+        let msg, sumOfAage;
+
+        sumOfAage = itemsArray.reduce((acc, cur) => {
+            return acc + cur.getAge();
+        }, 0);
+
+        msg = `Average age of all ${nameOfItems} is ${sumOfAage/itemsArray.length}`;
+
+        console.log(msg);
+
+    };
+    // Trees functions
+    const moreThan = (number) => {
+
+        let moreThan = itemsArray.filter(el => {
+
+            if (`treesNum` in el && el.treesNum > number) {
+                return true;
+            }
+
+        }).map(el => [el.name, el.treesNum]);
+
+        moreThan.forEach(el => {
+            [name, numOfTrees] = el;
+            let msg = `There is ${numOfTrees} trees in ${name}`;
+            console.log(msg);
+        });
+
+    };
+
+    const averageTreeDens = () => {
+
+        itemsArray.forEach(el => {
+
+            if (`getTreeDens` in el) {
+
+                let msg = `In ${el.name} tree density is: ${(el.getTreeDens()).toFixed(2)}`;
+                console.log(msg);
+            }
+
+        });
+
+    };
+
+    // Streets functions 
+    const streetLenghts = () => {
+
+        let lenghts = itemsArray.reduce((acc, cur) => acc + cur.length, 0);
+        if (lenghts) {
+            console.log(`Total length of streets is ${lenghts} with average of ${lenghts/itemsArray.length} `);
+        }
+
+    };
+
+    const sizeClassification = () => {
+
+        itemsArray.forEach(el => {
+
+            if (`getSizeClass` in el) {
+                let strClass = el.getSizeClass();
+                console.log(`${el.name} is classified to ${strClass}`);
+            }
+
+        });
+
+    }
+
+    averageAge();
+    averageTreeDens();
+    moreThan(1000);
+    streetLenghts();
+    sizeClassification();
 
     console.log(`==============`);
-    console.log(`END`);
-    console.log(`==============`);
+    console.log(`END ${nameOfItems} REPORT`);
 
 }
 
 raport(allParks);
+raport(allStreets);
