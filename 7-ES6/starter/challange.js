@@ -19,9 +19,7 @@ HINT: Use some of the ES6 features: classes, subclasses, template strings, defau
 
 */
 
-
-
-class TownElements {
+class TownElement {
 
     constructor(name, buildYear) {
 
@@ -29,6 +27,7 @@ class TownElements {
         this.buildYear = buildYear;
 
     }
+
     getAge() {
 
         return (new Date).getFullYear() - this.buildYear;
@@ -36,7 +35,7 @@ class TownElements {
     }
 };
 
-class Parks extends TownElements {
+class Park extends TownElement {
 
     constructor(name, buildYear, area, treesNum) {
 
@@ -53,7 +52,7 @@ class Parks extends TownElements {
     }
 };
 
-class Streets extends TownElements {
+class Street extends TownElement {
 
     constructor(name, buildYear, length = 250) {
 
@@ -87,16 +86,16 @@ class Streets extends TownElements {
 };
 
 const allStreets = [
-    new Streets(`Street1`, 2012, 1000),
-    new Streets(`Street2`, 2010, 150),
-    new Streets(`Street3`, 2012),
-    new Streets(`Street4`, 2016, 200)
+    new Street(`Street1`, 2012, 1000),
+    new Street(`Street2`, 2010, 150),
+    new Street(`Street3`, 2012),
+    new Street(`Street4`, 2016, 200)
 ];
 
 const allParks = [
-    new Parks(`Park1`, 1878, 3000, 10000),
-    new Parks(`Park2`, 1955, 300, 100),
-    new Parks(`Park3`, 1867, 1300, 1001),
+    new Park(`Park1`, 1878, 3000, 10000),
+    new Park(`Park2`, 1955, 300, 100),
+    new Park(`Park3`, 1867, 1300, 1001),
 ];
 
 function raport(itemsArray) {
@@ -110,7 +109,7 @@ function raport(itemsArray) {
     5. Size classification of all streets: tiny/small/normal/big/huge. If the size is unknown, the default is normal 
     */
     console.log(`===============`);
-    console.log(`${nameOfItems} REPORT`);
+    console.log(`${nameOfItems}'S REPORT`);
     console.log(`===============`);
 
 
@@ -123,7 +122,7 @@ function raport(itemsArray) {
             return acc + cur.getAge();
         }, 0);
 
-        msg = `Average age of all ${nameOfItems} is ${sumOfAage/itemsArray.length}`;
+        msg = `Average age of all ${nameOfItems}'s is ${sumOfAage/itemsArray.length}`;
 
         console.log(msg);
 
@@ -182,7 +181,7 @@ function raport(itemsArray) {
 
         });
 
-    }
+    };
 
     averageAge();
     averageTreeDens();
